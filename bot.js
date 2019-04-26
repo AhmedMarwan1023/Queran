@@ -1,229 +1,72 @@
-const Discord = require('discord.js');
-
-const Util = require('discord.js');
-
-const getYoutubeID = require('get-youtube-id');
-
-const fetchVideoInfo = require('youtube-info');
-
-const YouTube = require('simple-youtube-api');
-
-const youtube = new YouTube("AIzaSyAdORXg7UZUo7sePv97JyoDqtQVi3Ll0b8");
-
-const queue = new Map();
-
+"use strict";
+const Discord = require( 'discord.js' );
 const ytdl = require('ytdl-core');
+const client = new Discord.Client( );
+const settings = require("./settings.json");
+client.login(process.env.TOKEN);
 
-const fs = require('fs');
-
-const gif = require("gif-search");
-
-const client = new Discord.Client({disableEveryone: true});
-
-const prefix = "Q";
-var adminprefix = 'Q'
-/////////////////////////
-////////////////////////
-
- client.on('message', message => {
-	if(message.content.startsWith(prefix + 'قران')) {
-		message.delete();
-    const voiceChannel = message.member.voiceChannel;
-    if (!voiceChannel) return message.reply(`**يحب ان تكون في روم صوتي**`);
-
-	let embed = new Discord.RichEmbed()
-    .setAuthor(`${message.author.tag}`, message.author.avatarURL)
-	.setColor('#000000')
-	.setFooter("بوت القرآن | صدقة جارية للجميع", 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQiqVT5PZAfcy8qZxlr3SQv3mmCw9zPiu2YBLIQ4bBePL2jLm7h')
-      .setDescription(` 
-     🕋 اوامر بوت القرآن الكريم 🕋
-	 
-🇦 القرآن كاملاً ماهر المعيقلي
-🇧 سورة البقرة كاملة للشيخ مشاري العفاسي
-🇨 سورة الكهف كاملة بصوت مشارى بن راشد العفاسي
-⏹ لإيقاف القرآن الكريم
-🇩 القرآن كاملاً عبدالباسط عبدالصمد
-🇪 القرآن كاملاً ياسر الدوسري
-🇫 سورة الواقعه بصوت الشيخ مشاري بن راشد العفاسي`)
-	
-	message.channel.sendEmbed(embed).then(msg => {
-			msg.react('🇦')
-		.then(() => msg.react('🇧'))
-		.then(() => msg.react('🇨'))
-		.then(() => msg.react('⏹'))
-		.then(() => msg.react('🇩'))
-		.then(() => msg.react('🇪'))
-		.then(() => msg.react('🇫'))
-
-// Filters		
-	let filter1 = (reaction, user) => reaction.emoji.name === '🇦' && user.id === message.author.id;
-	let filter2 = (reaction, user) => reaction.emoji.name === '🇧' && user.id === message.author.id;
-	let filter3 = (reaction, user) => reaction.emoji.name === '🇨' && user.id === message.author.id;
-	let filter4 = (reaction, user) => reaction.emoji.name === '⏹' && user.id === message.author.id;
-	let filter5 = (reaction, user) => reaction.emoji.name === '🇩' && user.id === message.author.id;
-	let filter6 = (reaction, user) => reaction.emoji.name === '🇪' && user.id === message.author.id;
-	let filter7 = (reaction, user) => reaction.emoji.name === '🇫' && user.id === message.author.id;
-
-// Collectors
-	let collector1 = msg.createReactionCollector(filter1, { time: 120000 });
-	let collector2 = msg.createReactionCollector(filter2, { time: 120000 });
-	let collector3 = msg.createReactionCollector(filter3, { time: 120000 });
-	let collector4 = msg.createReactionCollector(filter4, { time: 120000 });
-	let collector5 = msg.createReactionCollector(filter5, { time: 120000 });
-	let collector6 = msg.createReactionCollector(filter6, { time: 120000 });
-	let collector7 = msg.createReactionCollector(filter7, { time: 120000 });
-	
-// Events
-collector1.on('collect', r => {
-    voiceChannel.join()
-      .then(connnection => {
-        const stream = ytdl("https://www.youtube.com/watch?v=Ktync4j_nmA", { filter: 'audioonly' });
-        const dispatcher = connnection.playStream(stream);
-        dispatcher.on('end', () => voiceChannel.leave());
-		collector1.stop();
-		collector2.stop();
-		collector3.stop();
-		collector4.stop();
-		collector5.stop();
-		collector6.stop();
-		collector7.stop();
-		embed.setDescription(`<@${message.author.id}> **تم تشغيل القرآن الكريم**`);
-		msg.edit(embed).then(msg.delete(5000));
-   });
-});
-collector2.on('collect', r => {
-    voiceChannel.join()
-      .then(connnection => {
-        const stream = ytdl("https://www.youtube.com/watch?v=qFq5h4wtjaM&t=30s", { filter: 'audioonly' });
-        const dispatcher = connnection.playStream(stream);
-        dispatcher.on('end', () => voiceChannel.leave());
-		collector1.stop();
-		collector2.stop();
-		collector3.stop();
-		collector4.stop();
-		collector5.stop();
-		collector6.stop();
-		collector7.stop();
-		embed.setDescription(`<@${message.author.id}> **تم تشغيل القرآن الكريم**`);
-		msg.edit(embed).then(msg.delete(5000));
-      });
-});
-collector3.on('collect', r => {
-    voiceChannel.join()
-      .then(connnection => {
-        const stream = ytdl("https://www.youtube.com/watch?v=8UWKiKGQmsE", { filter: 'audioonly' });
-        const dispatcher = connnection.playStream(stream);
-        dispatcher.on('end', () => voiceChannel.leave());
-		collector1.stop();
-		collector2.stop();
-		collector3.stop();
-		collector4.stop();
-		collector5.stop();
-		collector6.stop();
-		collector7.stop();
-		embed.setDescription(`<@${message.author.id}> **تم تشغيل القرآن الكريم**`);
-		msg.edit(embed).then(msg.delete(5000));
-      });
-});
-collector4.on('collect', r => {
-	if (message.guild.voiceConnection) message.guild.voiceConnection.disconnect();
-		collector1.stop();
-		collector2.stop();
-		collector3.stop();
-		collector4.stop();
-		collector5.stop();
-		collector6.stop();
-		collector7.stop();
-		embed.setDescription(`<@${message.author.id}> **تم إيقاف القرآن الكريم**`);
-		msg.edit(embed).then(msg.delete(5000));
-});
-collector5.on('collect', r => {
-    voiceChannel.join()
-      .then(connnection => {
-        const stream = ytdl("https://www.youtube.com/watch?v=vqXLGtZcUm8", { filter: 'audioonly' });
-        const dispatcher = connnection.playStream(stream);
-        dispatcher.on('end', () => voiceChannel.leave());
-		collector1.stop();
-		collector2.stop();
-		collector3.stop();
-		collector4.stop();
-		collector5.stop();
-		collector6.stop();
-		collector7.stop();
-		embed.setDescription(`<@${message.author.id}> **تم تشغيل القرآن الكريم**`);
-		msg.edit(embed).then(msg.delete(5000));
-      });
-});
-collector6.on('collect', r => {
-    voiceChannel.join()
-      .then(connnection => {
-        const stream = ytdl("https://www.youtube.com/watch?v=WYT0pQne-7w", { filter: 'audioonly' });
-        const dispatcher = connnection.playStream(stream);
-        dispatcher.on('end', () => voiceChannel.leave());
-		collector1.stop();
-		collector2.stop();
-		collector3.stop();
-		collector4.stop();
-		collector5.stop();
-		collector6.stop();
-		collector7.stop();
-		embed.setDescription(`<@${message.author.id}> **تم تشغيل القرآن الكريم**`);
-		msg.edit(embed).then(msg.delete(5000));
-      });
-});
-collector7.on('collect', r => {
-    voiceChannel.join()
-      .then(connnection => {
-        const stream = ytdl("https://www.youtube.com/watch?v=LTRcg-gR78o", { filter: 'audioonly' });
-        const dispatcher = connnection.playStream(stream);
-        dispatcher.on('end', () => voiceChannel.leave());
-		collector1.stop();
-		collector2.stop();
-		collector3.stop();
-		collector4.stop();
-		collector5.stop();
-		collector6.stop();
-		collector7.stop();
-		embed.setDescription(`<@${message.author.id}> **تم تشغيل القرآن الكريم**`);
-		msg.edit(embed).then(msg.delete(5000));
-      });
-});
-})
+var connections = { }
+var _she5 = {
+"ماهر المعيقلي": "https://www.youtube.com/watch?v=Ktync4j_nmA",
+"مشاري العفاسي": "https://www.youtube.com/watch?v=2etOS_nwTr0",
+"عبد الباسط عبد الصمد": "https://www.youtube.com/watch?v=vqXLGtZcUm8",
+"ياسر الدوسري": "https://www.youtube.com/watch?v=WYT0pQne-7w"
 }
-});
 
-const developers = ["283339636955414529","444126346676011028"]
-client.on('message', message => {
-    var argresult = message.content.split(` `).slice(1).join(' ');
-      if (!developers.includes(message.author.id)) return;
-      
-  if (message.content.startsWith(adminprefix + 'setg')) {
-    client.user.setGame(argresult);
-      message.channel.send(`**✅   ${argresult}**`)
-  } else 
-     if (message.content === (adminprefix + "leave")) {
-    message.guild.leave();        
-  } else  
-  if (message.content.startsWith(adminprefix + 'setw')) {
-  client.user.setActivity(argresult, {type:'WATCHING'});
-      message.channel.send(`**✅   ${argresult}**`)
-  } else 
-  if (message.content.startsWith(adminprefix + 'setl')) {
-  client.user.setActivity(argresult , {type:'LISTENING'});
-      message.channel.send(`**✅   ${argresult}**`)
-  } else 
-  if (message.content.startsWith(adminprefix + 'sets')) {
-    client.user.setGame(argresult, "https://www.twitch.tv/dream");
-      message.channel.send(`**✅**`)
-  }
-  if (message.content.startsWith(adminprefix + 'setname')) {
-  client.user.setUsername(argresult).then
-      message.channel.send(`Changing The Name To ..**${argresult}** `)
-} else
-if (message.content.startsWith(adminprefix + 'setava')) {
-  client.user.setAvatar(argresult);
-    message.channel.send(`Changing The Avatar To :**${argresult}** `);
+var _sheo5 = [
+"ماهر المعيقلي",
+"مشاري العفاسي",
+"عبد الباسط عبد الصمد",
+"ياسر الدوسري"
+]
+
+
+var voice = "quran"
+
+
+function repeatQuran(quranLink,connection){
+    const dispatcher = connection.playStream(ytdl(quranLink, {filter: 'audioonly'}), {volume:1,seek:0, passes : 1});
+    dispatcher.on('end', ( ) => {
+		if( connection == undefined ) return;
+		repeatQuran(quranLink,connection)
+    })
 }
-});
 
-client.login(process.env.BOT_TOKEN);
+client.on('message', ( message ) => {
+	let command = message.content.split(' ')[0];
+	let args = message.content.split(' ').slice(1);
+	if( command == "قران" || command == "قرآن" ){
+		var sheo5 = "";
+		for( var i = 0; i < _sheo5.length; i++ ){
+			sheo5 += "\n**" + (i+1) + "- " + _sheo5[i] + " **";
+		}
+		message.reply( '**يرجى كتابة اسم الشيخ المراد سماع تلاوته**\n **:الشيوخ المتوفرون هم**'+sheo5)
+		message.channel.awaitMessages(msg => msg.author == message.author,{ max: 1 })
+		.then( messages => {
+			var message = messages.first();
+			if( _she5[message.content] ){
+				if( connections[ message.guild ] ){
+					message.reply("**:white_check_mark: تم بدء التلاوة مع الشيخ "+ message.content +" **");
+					repeatQuran(_she5[message.content],connections[ message.guild ]);
+				} else{ 
+				
+					message.reply("**:timer: جاري دخول القناة ...**").then( m => {
+    if (message.member.voiceChannel) {
+      message.member.voiceChannel.join()
+        .then(connection => { 
+							m.edit("**:white_check_mark: تم بدء التلاوة مع الشيخ "+ message.content +" **");
+							connections[ message.guild ] = connection;
+							repeatQuran(_she5[message.content],connections[ message.guild ]);
+		})
+						};
+					});
+				}
+			} else {
+				message.reply("**:x: لم يتم ايجاد الشيخ**")
+			}
+			
+		})
+		.catch( err => { err; } );
+	
+	}
+});
