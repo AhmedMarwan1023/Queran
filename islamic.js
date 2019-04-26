@@ -2,7 +2,7 @@
 const Discord = require( 'discord.js' );
 const ytdl = require('ytdl-core');
 const client = new Discord.Client( );
-const settings = require("./settings.json");
+const settings = require("./package.json");
 client.login(process.env.TOKEN);
 
 var connections = { }
